@@ -5,20 +5,19 @@
 #
 
 # Load the library.
-suppressPackageStartupMessages(library(DESeq2))
+library(DESeq2)
 
 # The name of the file that contains the counts.
-counts_file = "featurecounts/D12_counts.txt"
+counts_file = "featurecounts/counts.txt"
 
 # The sample file is in CSV format and must have the headers "sample" and "condition".
 design_file = "design.csv"
 
-# The final result file.
-output_file = "D12_Deseq2_results.csv"
+# Specify the final result file name.
+output_file = "Deseq2_results.csv"
 
-# The PCA plot file
-PCA_file = "D12_Hisat2_Deseq2_PCA.pdf"
-
+# Specify the PCA plot file name.
+PCA_file = "Deseq2_PCA.pdf"
 
 
 # Read the sample file.
@@ -64,7 +63,7 @@ otherCols = df[!(names(df) %in% sample_names)]
 # Create DESEq2 dataset.
 dds = DESeqDataSetFromMatrix(countData=countData, colData=colData, design = ~condition)
 
-# Run deseq
+# Run DESeq
 dse = DESeq(dds)
 
 # Format the results.
@@ -110,7 +109,7 @@ data$foldChange = 2 ^ data$log2FoldChange
 names(data)[names(data)=="pvalue"] <-"PValue"
 names(data)[names(data)=="padj"] <- "FDR"
 
-# Create a real adjusted pvalue
+# Create a real adjusted p-value
 data$PAdj = p.adjust(data$PValue, method="hochberg")
 
 # Sort the data by PValue to compute false discovery counts.
