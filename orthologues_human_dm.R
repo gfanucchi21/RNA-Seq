@@ -1,5 +1,8 @@
-# Import human genes symbols
-human_genes <- read.table("C:/Users/gabri/WORK/Chip-seq_zzz3/zzz3-bound_downreg_genes.txt", quote="\"", comment.char="")
+### This script takes a list of human genes from a published experiment, and finds those that have an orthologue in Drosophila
+### and that are differentially expressed according to the RNA-seq analysis we performed
+
+# Import human gene symbols
+human_genes <- read.table("C:/Users/user/WORK/human_genes.txt", quote="\"", comment.char="")
 library(biomaRt)
 
 # Connect to the Asia mirror
@@ -13,10 +16,10 @@ ensembl = useEnsembl(biomart="ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ense
 # The "listFilters" function will give you the list of available filters for a given mart and species:
 head(listFilters(ensembl))
 
-# The "listAttributes" function will give you the list of the available attributes for a given mart and species:
+# The "listAttributes" function will give you the list of available attributes for a given mart and species:
 head(listAttributes(ensembl))
 
-# Extract for each gene symbol, the respective ensemble gene id
+# Extract for each gene symbol, the respective ensemble gene ID
 human_gene_id <- getBM(
   attributes = c("hgnc_symbol", "ensembl_gene_id"),
   filters = "hgnc_symbol",
@@ -25,17 +28,17 @@ human_gene_id <- getBM(
   uniqueRows = TRUE
 )
 
-# Save ensemble gene id in a vector
+# Save the ensemble gene ID in a vector
 human_ensembl_id <- human_gene_id$ensembl_gene_id
 
 
-### Find drosophila orthologs
+### Find Drosophila orthologs
 # The use of the dec2021 archive is required to avoid errors when using getLDS()
 listEnsemblArchives()
 human.mart <- useMart(host="https://dec2021.archive.ensembl.org", "ENSEMBL_MART_ENSEMBL", dataset="hsapiens_gene_ensembl")
 dm.mart <-  useMart(host="https://dec2021.archive.ensembl.org", "ENSEMBL_MART_ENSEMBL", dataset="dmelanogaster_gene_ensembl")
 
-# Find drosophila ortholgs from human enseble gene id
+# Find Drosophila ortholgs from human enseble gene id
 dm_orthologs <- getLDS(
   attributes = c("ensembl_gene_id", "external_gene_name"),
   filters = "ensembl_gene_id",
@@ -53,7 +56,7 @@ dm_orthologs_name <- dm_orthologs$Gene.name.1
 ### Check which genes are common in both datasets
 #
 
-# Import genes down-regulated in YEATS2 kd in drosophila
+# Import genes down-regulated in drosophila
 Deseq2_results <- read.csv("D12_Deseq2_results.csv")
 down_reg_symbols <- (Deseq2_results %>% filter((log2FoldChange < 0) & (FDR < 0.05)) %>% select("gene_symbol"))$gene_symbol
 
@@ -73,4 +76,4 @@ common_genes_GO <- getBM(
 common_genes
 
 # Save gene names in a file
-write(common_genes, "genes.regulated.by.ATAC.in.tumor.and.dm.txt", sep="\t")
+write(common_genes, "coomon_genes.txt", sep="\t")
