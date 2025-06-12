@@ -1,8 +1,8 @@
 # RNA-Seq
-Scripts for RNA-Seq analysis
+Scripts for RNA-Seq analysis.
 
 ## Project description
-This project has been created to analyse the RNA-Seq data from Drosophila cells
+This project has been created to analyse the RNA-Seq data from Drosophila cells.
 
 ## Analysis steps
 - Sequencing reads are aligned to the Drosophila melanogaster genome using Hisat2
