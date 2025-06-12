@@ -1,10 +1,10 @@
 library(goseq)
 
 # Import Deseq2 results
-Deseq2_results <- read.csv("D12_Deseq2_results.csv")
+Deseq2_results <- read.csv("Deseq2_results.csv")
 
 # Import the GO table for all genes in drosophila
-go_all_genes_dm6 <- read.delim("C:/Users/gabri/WORK/Refs/go_all_genes_dm6.tsv", header=FALSE)
+go_all_genes_dm6 <- read.delim("C:/Users/user/WORK/Refs/go_all_genes_dm6.tsv", header=FALSE)
 
 # These are the commands for setting the goseq parameters
 supportedOrganisms()
@@ -23,17 +23,17 @@ Deseq2_down <- Deseq2_results %>% filter(log2FoldChange < 0)
 ## GO for up-regulated genes
 #
 
-# Create a named vector for up-regulated genes
+# Create a named vector for up-regulated genes.
 DEgenes_up <- Deseq2_up$DE
 names(DEgenes_up) <- Deseq2_up$gene_id
 
-# Create a vector for the gene lenghts
+# Create a vector for the gene lengths.
 lenghts_up <- Deseq2_up$Length
 
-# Calculate the probability Weighting function for the up-regulated genes
+# Calculate the probability Weighting function for the up-regulated genes.
 pwf_up <- nullp(DEgenes_up, bias.data = lenghts_up)
 
-# Perform the GO analysis on up-regulated genes
+# Perform the GO analysis on up-regulated genes.
 pvals_up <- goseq(
   pwf_up,
   gene2cat = go_all_genes_dm6,
@@ -42,10 +42,10 @@ pvals_up <- goseq(
   use_genes_without_cat = FALSE
 )
 
-# Compute the FDR
+# Compute the FDR.
 pvals_up$FDR <- p.adjust(pvals_up$over_represented_pvalue, method="BH")
 
-# Print the top 10 GO terms
+# Print the top 10 GO terms.
 head(pvals_up)
 
 #
@@ -75,7 +75,7 @@ pvals_down <- goseq(
 # Compute the FDR
 pvals_down$FDR <- p.adjust(pvals_down$over_represented_pvalue, method="BH")
 
-# Separate the three ontologies in three tables and save them
+# Separate the three ontologies into three tables and save them
 ontology <- c("CC", "BP", "MF")
 
 p_vals_ontology <- lapply(ontology, function(x){
@@ -87,7 +87,7 @@ p_vals_ontology <- lapply(ontology, function(x){
 names(p_vals_ontology) <- ontology
 
 lapply(seq_along(p_vals_ontology), function(i) {
-  write.csv(p_vals_ontology[[i]], file = paste0("GO_", names(p_vals_ontology)[i], "_downreg_D12_hisat.csv"), 
+  write.csv(p_vals_ontology[[i]], file = paste0("GO_", names(p_vals_ontology)[i], "_downreg.csv"), 
             row.names = FALSE, quote = FALSE)
 })
 
@@ -97,7 +97,7 @@ lapply(seq_along(p_vals_ontology), function(i) {
 
 ## Bubble plot for down-regulated genes
 
-# Select only the top10 terms for each ontology and prepare them for plotting
+# Select only the top 10 terms for each ontology and prepare them for plotting
 p_vals_ontology_top10 <- lapply(p_vals_ontology, function(x){
   df <- head(x, n = 10)
   df$term <- factor(df$term, levels = df$term)
@@ -125,21 +125,21 @@ bubble_plots <- lapply(seq_along(p_vals_ontology_top10), function(i){
   })
 
 # Plot for Cellular component ontology
-pdf(file = "D12_Hisat2_Deseq2_top10_go_downreg_CC.pdf", width = 8, height = 6) # you can change the size of the output file
+pdf(file = "top10_go_downreg_CC.pdf", width = 8, height = 6) # you can change the size of the output file
 # Execute the plot
 bubble_plots[[1]]
 # Close the file that will contain the plot
 dev.off()
 
 # Plot for Biological Processes ontology
-pdf(file = "D12_Hisat2_Deseq2_top10_go_downreg_BP.pdf", width = 10, height = 6) # you can change the size of the output file
+pdf(file = "top10_go_downreg_BP.pdf", width = 10, height = 6) # you can change the size of the output file
 # Execute the plot
 bubble_plots[[2]]
 # Close the file that will contain the plot
 dev.off()
 
 # Plot for molecular Function ontology
-pdf(file = "D12_Hisat2_Deseq2_top10_go_downreg_MF.pdf", width = 12, height = 6) # you can change the size of the output file
+pdf(file = "top10_go_downreg_MF.pdf", width = 12, height = 6) # you can change the size of the output file
 # Execute the plot
 bubble_plots[[3]]
 # Close the file that will contain the plot
