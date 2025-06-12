@@ -4,7 +4,7 @@ library(RColorBrewer) # for a colourful plot
 library(ggrepel) # for nice annotations
 
 # Enter the DEseq2 output data
-df_volcano <- read.csv("D12_Deseq2_results.csv")
+df_volcano <- read.csv("Deseq2_results.csv")
 
 # Create a new column "delabel" to de, that will contain the name of the top 40 differentially expressed genes (NA in case they are not)
 df_volcano$delabel <- ifelse(df_volcano$gene_symbol %in% head(df_volcano[order(df_volcano$FDR), "gene_symbol"], 30), df_volcano$gene_symbol, NA)
@@ -30,13 +30,13 @@ all_volcanoplot <- ggplot(data = df_volcano, aes(x = log2FoldChange, y = -log10(
        x = expression("log"[2]*"FC"), y = expression("-log"[10]*"FDR")) +
   scale_x_continuous(breaks = seq(-12, 12, 2)) + 
   # to customise the breaks in the x axis
-  ggtitle('D12ko vs non-targeting control') + 
+  ggtitle('treated vs control') + 
   # Plot title
   geom_text_repel(max.overlaps = Inf) + # To show all labels 
   theme_bw()
 
 # Open the file that will contain your plot (the name is up to you)
-pdf(file = "D12_Hisat2_Deseq2_volcano_all_data.pdf", width = 8, height = 6) # you can change the size of the output file
+pdf(file = "volcano_all_data.pdf", width = 8, height = 6) # you can change the size of the output file
 # Execute the plot
 all_volcanoplot
 # Close the file that will contain the plot
@@ -67,13 +67,13 @@ filt_volcanoplot <- ggplot(data = df_volcano_filt, aes(x = log2FoldChange, y = -
        x = expression("log"[2]*"FC"), y = expression("-log"[10]*"FDR")) +
   scale_x_continuous(breaks = seq(-12, 12, 2)) + 
   # to customise the breaks in the x axis
-  ggtitle('D12ko vs non-targeting control') + 
+  ggtitle('treated vs control') + 
   # Plot title
   geom_text_repel(max.overlaps = Inf) + # To show all labels 
   theme_bw()
 
 # Open the file that will contain your plot (the name is up to you)
-pdf(file = "D12_Hisat2_Deseq2_volcano_cropped.pdf", width = 8, height = 6) # you can change the size of the output file
+pdf(file = "volcano_cropped.pdf", width = 8, height = 6) # you can change the size of the output file
 # Execute the plot
 filt_volcanoplot
 # Close the file that will contain the plot
