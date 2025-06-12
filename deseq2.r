@@ -1,4 +1,4 @@
-# 
+#!/usr/bin/env Rscript
 # Differential expression analysis with the DESeq2 package.
 # 
 # https://bioconductor.org/packages/release/bioc/html/DESeq2.html
