@@ -7,8 +7,8 @@
 WIDTH = 12
 HEIGHT = 15
 
-# Command line argument.
-input="D12_Deseq2_results.csv"
+# Specify the input file name
+input="Deseq2_results.csv"
 
 # Default FDR cutoff
 LIMIT = 5
